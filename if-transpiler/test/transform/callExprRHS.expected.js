@@ -1,0 +1,16 @@
+var $tmp0, $tmp1, $tmp2, $tmp3, $tmp4, $tmp5, $tmp6, $tmp7;
+$tmp1 = x.w;
+$tmp0 = $tmp1.h;
+z = $tmp0.k();
+x = z.y();
+$tmp2 = g();
+z = $tmp2.k();
+$tmp4 = g();
+$tmp3 = $tmp4.k();
+z = $tmp3.h();
+w = z[y]();
+$tmp5 = y();
+w = z[$tmp5]();
+$tmp6 = k();
+$tmp7 = y();
+w = $tmp6[$tmp7]();

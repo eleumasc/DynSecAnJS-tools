@@ -1,0 +1,16 @@
+{
+  "name": "aran-linvail",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "./build.sh"
+  },
+  "dependencies": {
+    "acorn": "^8.11.3",
+    "aran": "2.5.1",
+    "aran-access": "0.1.9",
+    "astring": "^1.8.6"
+  },
+  "devDependencies": {
+    "browserify": "^17.0.0"
+  }
+}

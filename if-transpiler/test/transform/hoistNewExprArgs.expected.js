@@ -1,0 +1,17 @@
+var $tmp0, $tmp1, $tmp2, $tmp3, $tmp4, $tmp5, $tmp6, $tmp7, $tmp8, $tmp9, $tmp10, $tmp11;
+$tmp0 = x();
+$tmp1 = y();
+$tmp2 = z();
+a = new g($tmp0, $tmp1, $tmp2);
+$tmp5 = z();
+$tmp4 = y($tmp5);
+$tmp3 = x($tmp4);
+b = new g($tmp3);
+$tmp8 = z();
+$tmp7 = y($tmp8);
+$tmp6 = x($tmp7);
+c = new x.g($tmp6);
+$tmp9 = x();
+$tmp10 = y();
+$tmp11 = z();
+d = new k[f]($tmp9, $tmp10, $tmp11);
