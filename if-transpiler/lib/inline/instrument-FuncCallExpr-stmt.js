@@ -24,7 +24,6 @@
             return;
         var lhsName = [];
         if (node.parentNode.type !== Syntax.AssignmentExpression) {
-			debugger;
 			throw new Error("Parent Node of function expression must be Assignment Expression");
 		}
         if (node.parentNode.left.type === Syntax.Identifier) {

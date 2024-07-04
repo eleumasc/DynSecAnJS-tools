@@ -150,7 +150,6 @@
 				updateExprVar = common.getFindVarInScopeChainExpr(cs, updateExprVarName, null, b.literal(true));
 				updateSecLvl = common.secLvlHelper(b.identifier(updateExprVarName), false, cs);
 			} else if (node.right.argument.type === Syntax.MemberExpression) {
-				debugger;
 				updateExprVar = common.getFindVarInScopeChainExpr(cs, node.right.argument.object.name || 'this',
 					node.right.argument.property.name, b.literal(true));
 				updateSecLvl = common.secLvlHelper(node.right.argument, false, cs);
