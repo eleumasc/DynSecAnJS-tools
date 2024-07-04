@@ -145,7 +145,7 @@
 
 		if (node.right.type === Syntax.UpdateExpression) {
 			var updateExprVarName, updateExprVar, updateSecLvl;
-			if (node.right.argument.type === Syntax.identifier) {
+			if (node.right.argument.type === Syntax.Identifier) {
 				updateExprVarName = node.right.argument.name;
 				updateExprVar = common.getFindVarInScopeChainExpr(cs, updateExprVarName, null, b.literal(true));
 				updateSecLvl = common.secLvlHelper(b.identifier(updateExprVarName), false, cs);
