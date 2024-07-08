@@ -1,4 +1,4 @@
-const readStdin = () => {
+exports.gets = () => {
   return new Promise((resolve) => {
     process.stdin.setEncoding("utf8");
 
@@ -13,5 +13,3 @@ const readStdin = () => {
     });
   });
 };
-
-module.exports = { readStdin };

@@ -4,25 +4,25 @@ const _2 = Symbol("2");
 const _3 = Symbol("3");
 
 const table = {
-  0: _0,
-  1: _1,
-  2: _2,
-  3: _3,
+  "0": _0,
+  "1": _1,
+  "2": _2,
+  "3": _3
 };
 
 const GENERAL_FN_MODEL = Symbol.for("general_function_model");
 
-const isPrimitive = (x) => {
+const isPrimitive = x => {
   return x !== Object(x);
 };
 
-const union = (params) => {
+const union = params => {
   return params.reduce((acc, curr) => {
     return acc > curr ? acc : curr;
-  }, 0);
+  });
 };
 
-const stateValues = (map) => {
+const stateValues = map => {
   let arr = [];
   for (const val of map.values()) {
     arr.push(val);
@@ -46,11 +46,11 @@ const addFnModel = (fn, model) => {
 };
 
 addFnModel(GENERAL_FN_MODEL, {
-  getLabel: function () {
+  getLabel: function() {
     let arr = stateValues(this.labelState);
     if (this.self) arr.push(this.self.label);
     return union(arr);
-  },
+  }
 });
 
 const label = (unlabeledVal, labelModelInstance) => {
@@ -70,11 +70,11 @@ const unlabel = (labeledVal, id, labelModelInstance) => {
   } else {
     if (labeledVal.inner instanceof Array) {
       var oL = labeledVal.label;
-      var pL = labeledVal.inner.map((x) => x.label);
+      var pL = labeledVal.inner.map(x => x.label);
 
       labelModelInstance.labelState.set(id, {
         oLabel: oL, //label of the array as object
-        pLabel: pL, //label of each item in the array
+        pLabel: pL //label of each item in the array
       });
     } else if (labeledVal.inner instanceof Object) {
       console.log("labeling objec!");
@@ -85,20 +85,13 @@ const unlabel = (labeledVal, id, labelModelInstance) => {
   return labeledVal.inner;
 };
 
-/**
- *
- * @param {Function} fn is a uninstrumented function
- * @param {Object} ths target object
- * @param {Array} args arguments for the call
- *
- * Before an external library is executed a model instance is created for the function call with the label of the
- */
 let leave = (fn, ths, args) => {
   let fnModel = fnRegistry.get(fn) || fnRegistry.get(GENERAL_FN_MODEL);
+
   let counter = 0;
   let modelInstance = Object.assign(fnModel, {
-    labelState: new Map(), //The label state is populated later see: unlabel below
-    self: ths,
+    labelState: new Map(),
+    self: ths
   });
 
   for (let val of args) {
@@ -106,8 +99,7 @@ let leave = (fn, ths, args) => {
   }
 
   fnModelInstance.set(fn, modelInstance);
-  //return fnRegistry.has(fn);
-  return true;
+  return fnRegistry.has(fn);
 };
 
 let enter = (fn, val) => {
@@ -124,6 +116,3 @@ exports.addFnModel = addFnModel;
 
 exports.union = union;
 exports.stateValues = stateValues;
-exports.hasFunction = (fn) => {
-  return fnRegistry.has(fn);
-};

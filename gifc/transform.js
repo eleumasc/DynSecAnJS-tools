@@ -1,9 +1,9 @@
-const Analysis = require("./analysis");
-const { readStdin } = require("./readStdin");
+const Analysis = require("./lib/analysis");
+const { gets } = require("./lib/utils");
 
 const main = async () => {
   try {
-    const input = await readStdin();
+    const input = await gets();
     const transformed = Analysis.transform(input);
     process.stdout.write(transformed);
     process.exitCode = 0;

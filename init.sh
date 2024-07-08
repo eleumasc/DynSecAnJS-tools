@@ -37,8 +37,8 @@ echo "Executing 'npm i' in if-transpiler directory..."
 echo "Executing 'npm i' in jalangi2 directory..."
 (cd jalangi2 && npm i)
 
-# Execute npm i and npm run build in aran-linvail directory
-echo "Executing 'npm i' and 'npm run build' in aran-linvail directory..."
-(cd aran-linvail && npm i && npm run build)
+# Execute npm i and npm run build in gifc directory
+echo "Executing 'npm i' and 'npm run build' in gifc directory..."
+(cd gifc && npm i && npm run build)
 
 echo "Script execution completed successfully."
