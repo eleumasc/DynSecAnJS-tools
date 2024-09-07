@@ -1,0 +1,104 @@
+Name:           language-ecmascript
+Version:        5.0.0
+Cabal-Version:	>= 1.10
+Copyright:      (c) 2007-2012 Brown University, (c) 2008-2010 Claudiu Saftoiu,
+                (c) 2012-2015 Stevens Institute of Technology,
+                (c) 2016 Andrey Chudnov
+License:        BSD3
+License-file:   LICENSE
+Author:         Andrey Chudnov, Arjun Guha, Spiridon Aristides Eliopoulos,
+                Joe Gibbs Politz, Claudiu Saftoiu
+Maintainer:     Andrey Chudnov <oss@chudnov.com>
+Homepage:       http://github.com/jswebtools/language-ecmascript
+Bug-reports:    http://github.com/jswebtools/language-ecmascript/issues
+Stability:      experimental
+Tested-with:    GHC==7.4.2, GHC==7.6.3, GHC==7.8.3, GHC==7.10.3
+Extra-Source-Files: test-data/diff/left/*.js, test-data/diff/right/*.js, test-data/diff/expects/*.diff, test-data/*.js, CHANGELOG
+Category:       Language
+Build-Type:     Simple
+Synopsis:       JavaScript parser and pretty-printer library
+Description:
+  Tools for working with ECMAScript 5 (popularly known as JavaScript).
+  Includes a parser, pretty-printer, a simple quasi-quoter and tools
+  for working with source tree annotations and an arbitrary
+  instance. Analyses have migrated to package
+  'language-ecmascript-analysis'.
+
+Source-repository head
+   type: git
+   location: git://github.com/jswebtools/language-ecmascript.git
+
+Source-repository this
+   type: git
+   location: git://github.com/jswebtools/language-ecmascript.git
+   tag: 5.0.0
+
+Library
+  Hs-Source-Dirs:
+    src
+  Build-Depends: base >= 4 && < 5,
+                 mtl >= 1.1.0.1,
+                 parsec >= 3.0 && < 3.2,
+                 annotated-wl-pprint >= 0.7 && < 1.0,
+                 containers >= 0.1,
+                 uniplate >= 1.6 && <1.7,
+                 data-default-class >= 0.0.1 && < 0.2,
+                 data-default-instances-base >= 0.0.1 && < 0.2,
+                 QuickCheck >= 2.5 && < 2.9,
+                 template-haskell,
+                 testing-feat >= 0.4.0.2 && < 0.5,
+                 Diff == 0.3.*,
+                 lens-simple
+  ghc-options:
+    -fwarn-incomplete-patterns
+  Exposed-Modules: Language.ECMAScript5
+                   Language.ECMAScript5.Syntax
+                   Language.ECMAScript5.Syntax.Arbitrary
+                   Language.ECMAScript5.Syntax.CodeGen
+                   Language.ECMAScript5.Syntax.QuasiQuote
+                   Language.ECMAScript5.Parser
+                   Language.ECMAScript5.PrettyPrint
+                   Language.ECMAScript5.Syntax.Annotations
+                   Language.ECMAScript5.Lexer
+                   Language.ECMAScript5.ParserState
+                   Language.ECMAScript5.Parser.Unicode
+                   Language.ECMAScript5.Parser.Util
+                   Language.ECMAScript5.SourceDiff
+  Default-Extensions:
+    DeriveDataTypeable, ScopedTypeVariables, DeriveFunctor, DeriveFoldable, DeriveTraversable, FlexibleContexts
+  Default-Language: Haskell2010
+
+Test-Suite test
+  Hs-Source-Dirs: test
+  Type: exitcode-stdio-1.0
+  Main-Is: TestMain.hs
+  Other-Modules:
+    Test.Diff
+    Test.Pretty
+    Test.StatementTests
+    Test.ExpressionTests
+    Test.Reference
+  Build-Depends:
+    base >= 4 && < 5,
+    mtl >= 1.1.0.1,
+    parsec < 3.2.0,
+    annotated-wl-pprint >= 0.7 && < 1.0,
+    containers >= 0.1 && < 0.6,
+    directory >= 1.2.5,
+    filepath,
+    tasty == 0.11.*, 
+    tasty-hunit == 0.9.*,
+    tasty-quickcheck == 0.8.*,
+    tasty-golden == 2.3.*,
+    data-default-class >= 0.0.1 && < 0.2,
+    Diff == 0.3.*,
+    transformers,
+    aeson,
+    bytestring,
+    groom,
+    language-ecmascript
+  Default-Extensions: DeriveDataTypeable, ScopedTypeVariables, DeriveFunctor, DeriveFoldable, DeriveTraversable, FlexibleContexts
+  Default-Language: Haskell2010
+  ghc-options:
+    -fwarn-incomplete-patterns
+

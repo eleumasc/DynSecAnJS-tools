@@ -1,0 +1,23 @@
+= 1.2.0 =
+Increased compatibility of handler extraction with the HTML5 spec. Now, the generated handler functions will have implicit parameters expected by the inline handler code.
+
+= 1.1.0 =
+Ported to language-ecmascript-5.0.0.
+
+= 1.0.2 =
+Bug fix: prevent potential race conditions when setting event handlers in the consolidated script tag by adding a defer attribute.
+
+= 1.0.1.1 =
+Dependency upgrades. Now builds on LTS Hackage 2.13.
+
+= 1.0.1 =
+Major bug fixes to handler and source attributes extraction. Fixed HTML consolidation bug that substituted HTML/XML entities in inline scripts.
+
+= 1.0 =
+Changed the API in Text.Html.Consolidate: extractJSArr and extract now
+return parsed JavaScript instead of pretty-printed, similarly insertJSArr
+accepts parsed JavaScript instead of a string. Added a function
+extractPretty that has the same functionality as extract in the previous version.
+
+= 0.9 =
+Initial release on Hackage.
