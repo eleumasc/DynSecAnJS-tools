@@ -7,12 +7,16 @@ const monitor = require("./monitor");
 monitor.init(global);
 
 const aran = Aran({ namespace: "META", sandbox: true });
-const instrument = (script, parent) => Astring.generate(aran.weave(Acorn.parse(script), pointcut, parent));
+const instrument = (script, parent) =>
+  Astring.generate(aran.weave(Acorn.parse(script), pointcut, parent));
 
 const linvail = Linvail(instrument, {
   /**TODO: enter must be the (PC u EXC u RET) */
-  enter: value => ({ base: value, meta: { label: monitor.currentContext(monitor.PC) } }),
-  leave: value => value.base
+  enter: (value) => ({
+    base: value,
+    meta: { label: monitor.currentContext(monitor.PC) },
+  }),
+  leave: (value) => value.base,
 });
 
 global.META = Object.create(linvail.traps);
@@ -24,11 +28,11 @@ META.GLOBAL = linvail.sandbox;
 
 //this is a work around to the problem of
 let contextTemp = undefined;
-const toNextContext = label => {
+const toNextContext = (label) => {
   contextTemp = label;
 };
 
-const enterContext = contextType => {
+const enterContext = (contextType) => {
   monitor.pushContext(contextType, contextTemp);
   contextTemp = undefined; //resetting the contextTemp!!!
 };
@@ -38,7 +42,7 @@ META.test = (val, serial) => {
   return linvail.traps.test(val, serial);
 };
 
-META.block = serial => {
+META.block = (serial) => {
   enterContext(monitor.PC);
 };
 
@@ -49,7 +53,7 @@ META.leave = (type, serial) => {
 
 META.invoke = (value1, value2, values, serial) => {
   //add the contexts labels
-  const labels = values.map(v => v.meta.label);
+  const labels = values.map((v) => v.meta.label);
   labels.push(monitor.globalContext());
   monitor.enforce(linvail.leave(value1)[linvail.leave(value2)], labels);
 
@@ -69,13 +73,14 @@ META.apply = (fn, ths, args, serial) => {
 };
 
 META.write = (identifier, val, serial) => {
-   
-  return val
+  return val;
 };
 
 META.binary = (op, left, rigth, serial) => {
   const res = linvail.traps.binary(op, left, rigth, serial);
-  res.meta.label = monitor.join(monitor.join(left.meta.label, rigth.meta.label, monitor.globalContext()));
+  res.meta.label = monitor.join(
+    monitor.join(left.meta.label, rigth.meta.label, monitor.globalContext())
+  );
   return res;
 };
 
@@ -86,7 +91,7 @@ META.unary = (op, val, serial) => {
 };
 
 const pointcut = Object.keys(linvail.traps);
-pointcut.push("block", "leave","write");
+pointcut.push("block", "leave", "write");
 
 exports.setup = () => {
   return Astring.generate(aran.setup(pointcut));
