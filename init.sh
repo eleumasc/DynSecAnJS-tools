@@ -1,8 +1,7 @@
 #!/bin/bash
 
-WEB_PAGE_REPLAY_ZIP="web_page_replay_go.zip"
-GECKODRIVER_TAR_GZ="geckodriver-v0.34.0-linux64.tar.gz"
-FOXHOUND_TAR_BZ2="foxhound-114.0.2.en-US.linux-x86_64.tar.bz2"
+WPRGO_ZIP="web_page_replay_go.zip"
+FOXHOUND_ZIP="foxhound.zip"
 
 decompress_files() {
     echo "Decompressing $1..."
@@ -18,9 +17,11 @@ decompress_files() {
     fi
 }
 
-decompress_files "$WEB_PAGE_REPLAY_ZIP"
-decompress_files "$GECKODRIVER_TAR_GZ"
-decompress_files "$FOXHOUND_TAR_BZ2"
+echo "Decompressing WPRGO..."
+decompress_files "$WPRGO_ZIP"
+
+echo "Decompressing Project Foxhound..."
+decompress_files "$FOXHOUND_ZIP"
 
 echo "Setting up JEST..."
 (cd jest && stack build)
