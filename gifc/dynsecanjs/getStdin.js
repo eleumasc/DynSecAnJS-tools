@@ -1,4 +1,4 @@
-exports.gets = () => {
+exports.getStdin = () => {
   return new Promise((resolve) => {
     process.stdin.setEncoding("utf8");
 

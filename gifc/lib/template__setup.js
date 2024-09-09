@@ -1,3 +1,3 @@
 const Analysis = require("./analysis");
 
-Analysis.setup(global);
+Analysis.setup(/*{{GENERATED_SETUP}}*/);
