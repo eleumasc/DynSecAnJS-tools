@@ -4,7 +4,7 @@
   "description": "Javascript Security Library",
   "main": "guardia.js",
   "scripts": {
-    "build": "rm -rf build && mkdir build && npx browserify lib/setup.js > build/setup.js"
+    "init": "node dynsecanjs/generateSetup.js"
   },
   "author": "Angel Luis Scull Pupo",
   "email": "ascullpu@vub.ac.be",

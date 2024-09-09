@@ -8,13 +8,6 @@ async function main() {
   const libDir = path.resolve("lib");
   const outDir = path.resolve("generated");
 
-  console.log(
-    "/*{{GENERATED_SETUP}}*/".replace(
-      "/*{{GENERATED_SETUP}}*/",
-      `function () {\n${Rewriter.setup()}\n}`
-    )
-  );
-
   writeFileSync(
     path.join(libDir, "generated__setup.js"),
     readFileSync(path.join(libDir, "template__setup.js"))

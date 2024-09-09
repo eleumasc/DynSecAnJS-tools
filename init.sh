@@ -30,7 +30,7 @@ echo "Setting up IF-Transpiler..."
 (cd if-transpiler && npm i)
 
 echo "Setting up GIFC..."
-(cd gifc && npm i && npm run build)
+(cd gifc && npm i && npm run init)
 
 echo "Setting up Jalangi2..."
 (cd jalangi2 && npm i)
