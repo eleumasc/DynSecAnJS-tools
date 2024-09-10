@@ -1,7 +1,7 @@
 {
   "name": "linvail-taint",
   "scripts": {
-    "init": "node dynsecanjs/generateSetup.js"
+    "init": "node app/generateSetup.js"
   },
   "dependencies": {
     "acorn": "^8.12.1",

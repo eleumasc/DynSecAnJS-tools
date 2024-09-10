@@ -1,11 +1,11 @@
 const Analysis = require("../lib/analysis");
-const { getStdin } = require("./getStdin");
+const { getStdin } = require("./util");
 
 async function main() {
   const input = await getStdin();
-  const transformed = Analysis.transform(input);
+  const instrumented = Analysis.instrument(input);
   Analysis.setup();
-  global.eval(transformed);
+  global.eval(instrumented);
 }
 
 main();

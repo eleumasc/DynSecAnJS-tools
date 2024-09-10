@@ -4,7 +4,7 @@
   "description": "Javascript Security Library",
   "main": "guardia.js",
   "scripts": {
-    "init": "node dynsecanjs/generateSetup.js"
+    "init": "node app/generateSetup.js"
   },
   "author": "Angel Luis Scull Pupo",
   "email": "ascullpu@vub.ac.be",

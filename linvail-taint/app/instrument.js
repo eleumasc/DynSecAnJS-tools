@@ -1,5 +1,5 @@
 const Analysis = require("../lib/analysis");
-const { getStdin } = require("./getStdin");
+const { getStdin } = require("./util");
 const { promisify } = require("util");
 
 async function main() {

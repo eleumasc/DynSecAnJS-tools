@@ -32,6 +32,9 @@ echo "Setting up IF-Transpiler..."
 echo "Setting up GIFC..."
 (cd gifc && npm i && npm run init)
 
+echo "Setting up linvail-taint..."
+(cd linvail-taint && npm i && npm run init)
+
 echo "Setting up Jalangi2..."
 (cd jalangi2 && npm i)
 
