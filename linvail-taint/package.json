@@ -1,0 +1,15 @@
+{
+  "name": "linvail-taint",
+  "scripts": {
+    "init": "node dynsecanjs/generateSetup.js"
+  },
+  "dependencies": {
+    "acorn": "^8.12.1",
+    "aran": "3.0.9",
+    "astring": "^1.9.0",
+    "linvail": "6.0.12"
+  },
+  "devDependencies": {
+    "browserify": "^17.0.0"
+  }
+}

@@ -1,13 +1,17 @@
 const Analysis = require("../lib/analysis");
 const { getStdin } = require("./getStdin");
+const { setupPreamble, header, footer } = require("./snippets");
 const { promisify } = require("util");
 
 async function main() {
   try {
     const input = await getStdin();
-    const transformed = Analysis.transform(input);
+    const instrumented = Analysis.instrument(input);
     await promisify((callback) => {
-      process.stdout.write(transformed, callback);
+      process.stdout.write(
+        `${setupPreamble}\n${header}\n${instrumented}\n${footer}`,
+        callback
+      );
     })();
     process.exit(0);
   } catch (e) {

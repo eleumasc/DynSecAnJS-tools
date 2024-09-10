@@ -8,7 +8,9 @@ monitor.init(global);
 
 const aran = Aran({ namespace: "META", sandbox: true });
 const instrument = (script, parent) =>
-  Astring.generate(aran.weave(Acorn.parse(script), pointcut, parent));
+  Astring.generate(
+    aran.weave(Acorn.parse(script, { ecmaVersion: "latest" }), pointcut, parent)
+  );
 
 const linvail = Linvail(instrument, {
   /**TODO: enter must be the (PC u EXC u RET) */
@@ -97,6 +99,4 @@ exports.setup = () => {
   return Astring.generate(aran.setup(pointcut));
 };
 
-exports.instrument = () => {
-  return instrument;
-};
+exports.instrument = instrument;

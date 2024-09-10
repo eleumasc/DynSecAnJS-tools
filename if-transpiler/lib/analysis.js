@@ -1,14 +1,12 @@
-const { gets } = require("./lib/utils");
-const { setupPreamble, header, footer } = require("./lib/snippets");
+const ifTranspiler = require("./esIF-Transpiler");
+const common = require("./common");
 const esprima = require("esprima");
 const escodegen = require("escodegen");
-const ifTranspiler = require("./lib/esIF-Transpiler");
-const common = require("./lib/common");
 
-function compile(content) {
+exports.instrument = (script) => {
   var tree, formatOption;
 
-  tree = esprima.parse(content, {
+  tree = esprima.parse(script, {
     loc: true,
     range: false,
     raw: false,
@@ -30,12 +28,4 @@ function compile(content) {
     format: formatOption,
     directive: true,
   });
-}
-
-const main = async () => {
-  const input = await gets();
-  const compiled = compile(input);
-  global.eval(`${setupPreamble}\n${header}\n${compiled}\n${footer}`);
 };
-
-main();

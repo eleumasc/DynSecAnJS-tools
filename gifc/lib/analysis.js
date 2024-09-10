@@ -1,6 +1,10 @@
 const Rewriter = require("./ifc/rewriter");
 const sl = require("./fmodel/sl");
 
+exports.generateSetup = () => {
+  return Rewriter.setup();
+};
+
 exports.setup = (generatedSetup) => {
   if (generatedSetup) {
     generatedSetup();
@@ -10,6 +14,6 @@ exports.setup = (generatedSetup) => {
   sl.setup();
 };
 
-exports.transform = (script) => {
-  return Rewriter.instrument()(script, null);
+exports.instrument = (script) => {
+  return Rewriter.instrument(script, null);
 };

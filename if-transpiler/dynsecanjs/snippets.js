@@ -117,18 +117,18 @@ function $output(arg, argValue, $$cs, ch_lvl, policy, pcLvl) {
 `;
 
 exports.header = `
-var password = "secret";
+var source = "secret";
 var sink = undefined;
-var password, sink;
-$Γ['global']['sink'] = $Γ['global']['password'] = 0;
-password = 'secret';
-$Γ['global']['password'] = $Λ[$Λ.length - 1].l;
-$Γ['global']['password'] instanceof Object ? $Γ['global']['password'].Σ = $Γ['global']['password'].Σ >= $Λ[$Λ.length - 1].l ? $Γ['global']['password'].Σ : $Λ[$Λ.length - 1].l : $Γ['global']['password'] = $Γ['global']['password'] >= $Λ[$Λ.length - 1].l ? $Γ['global']['password'] : $Λ[$Λ.length - 1].l;
+var source, sink;
+$Γ['global']['sink'] = $Γ['global']['source'] = 0;
+source = 'secret';
+$Γ['global']['source'] = $Λ[$Λ.length - 1].l;
+$Γ['global']['source'] instanceof Object ? $Γ['global']['source'].Σ = $Γ['global']['source'].Σ >= $Λ[$Λ.length - 1].l ? $Γ['global']['source'].Σ : $Λ[$Λ.length - 1].l : $Γ['global']['source'] = $Γ['global']['source'] >= $Λ[$Λ.length - 1].l ? $Γ['global']['source'] : $Λ[$Λ.length - 1].l;
 sink = undefined;
 $Γ['global']['sink'] = $Λ[$Λ.length - 1].l;
 $Γ['global']['sink'] instanceof Object ? $Γ['global']['sink'].Σ = $Γ['global']['sink'].Σ >= $Λ[$Λ.length - 1].l ? $Γ['global']['sink'].Σ : $Λ[$Λ.length - 1].l : $Γ['global']['sink'] = $Γ['global']['sink'] >= $Λ[$Λ.length - 1].l ? $Γ['global']['sink'] : $Λ[$Λ.length - 1].l;
 
-$Γ["global"]["password"] = 1;
+$Γ["global"]["source"] = 1;
 `;
 
 exports.footer = `
