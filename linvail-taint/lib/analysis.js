@@ -3,6 +3,8 @@ const Aran = require("aran");
 const Astring = require("astring");
 const Linvail = require("linvail");
 
+const DEBUG = false;
+
 const advice = {};
 const pointcut = (name, node) => name in advice;
 const aran = Aran({});
@@ -10,91 +12,40 @@ const internals = new WeakSet();
 const callstack = [];
 const push = (tag, name, serial) => {
   callstack.push({ tag, name, inputs: [], serial });
-  // console.log(Array(callstack.length + 1).join("."), tag, name, serial);
 };
 const peek = () => callstack[callstack.length - 1];
 const pop = () => {
-  const { tag, name, inputs, serial } = callstack.pop();
-  // console.log(Array(callstack.length + 2).join("."), "pop", tag, name, serial);
+  callstack.pop();
 };
 global[aran.namespace] = advice;
-const istainted = ($$value) => $$value.meta;
+const isTainted = ($$value) => $$value.meta;
 const membrane = {
-  taint: (value, reason) => {
-    // console.log(Array(callstack.length + 1).join("."), "taint", print(value), reason);
+  taint: (value) => {
     let meta = null;
-    if (peek().tag !== "internal" && peek().inputs.filter(istainted).length) {
+    if (peek().tag !== "internal" && peek().inputs.filter(isTainted).length) {
       meta = Object.assign({}, peek());
       meta.inputs = meta.inputs.slice();
     }
     return { base: value, meta };
   },
-  clean: ({ base, meta }, reason) => {
-    // console.log(Array(callstack.length + 1).join("."), "clean", print(base), meta, reason);
-    peek().inputs.push({ base, meta, reason });
+  clean: ({ base, meta }) => {
+    peek().inputs.push({ base, meta });
     return base;
   },
 };
 const { capture, release } = Linvail(membrane, { check: true });
-const print = (value) => {
-  if (typeof value === "function") return "[function]";
-  if (typeof value === "object" && value !== null)
-    return Object.prototype.toString.call(value);
-  if (typeof value === "string") return JSON.stringify(value);
-  return String(value);
-};
-const log = ({ base, meta: { tag, name, serial, inputs }, reason }, depth) => {
-  // const { line, column } = aran.nodes[serial].loc.start;
-  // console.log(
-  //   Array(depth + 1).join("  ") +
-  //     (reason || "") +
-  //     " " +
-  //     print(base) +
-  //     " << " +
-  //     tag +
-  //     " " +
-  //     name +
-  //     " @" +
-  //     line +
-  //     ":" +
-  //     column
-  // );
-  // for (const $$value of inputs) {
-  //   if ($$value.meta) {
-  //     log($$value, depth + 1);
-  //     break;
-  //   } else {
-  //     // console.log(Array(depth + 1).join("  ") + (reason || "") + " " + print(base));
-  //   }
-  // }
-};
-
-// Policy //
-advice.write = ($$value, name, serial) => {
-  if (typeof name === "string" && name.startsWith("_ARAN_SOURCE_")) {
-    $$value.meta = { tag: "initial", name, serial, inputs: [] };
-  } else if (
-    typeof name === "string" &&
-    name.startsWith("_ARAN_SINK_") &&
-    $$value.meta
-  ) {
-    log($$value, 0);
-    throw membrane.taint(capture(new Error("Taint policy violation")));
-  }
-  return $$value;
-};
 
 // Program //
 advice.program = (global, serial) => {
   push("internal", "program", serial);
 };
 advice.success = ($$value, serial) => {
-  const value = release(membrane.clean($$value, "success"));
+  const value = release(membrane.clean($$value));
   pop();
   return value;
 };
 advice.failure = ($$value, serial) => {
-  const value = release(membrane.clean($$value, "failure"));
+  const value = release(membrane.clean($$value));
   pop();
   return value;
 };
@@ -113,9 +64,9 @@ advice.abrupt = ($$value, serial) => {
 };
 
 // Consumers //
-advice.test = ($$value, serial) => membrane.clean($$value, "test");
+advice.test = ($$value, serial) => membrane.clean($$value);
 advice.eval = ($$value, serial) => {
-  const script = release(membrane.clean($$value, "eval"));
+  const script = release(membrane.clean($$value));
   return aran.weave(Acorn.parse(script, { locations: true }), pointcut, serial);
 };
 
@@ -124,21 +75,53 @@ advice.argument = (_value, name) => {
   if (name === "length" || name === "new.target") return membrane.taint(_value);
   return _value;
 };
-advice.primitive = (primitive, serial) =>
-  membrane.taint(primitive, "primitive");
-advice.builtin = (value, name, serial) =>
-  membrane.taint(capture(value), "builtin");
+advice.primitive = (primitive, serial) => membrane.taint(primitive);
+advice.builtin = (value, name, serial) => membrane.taint(capture(value));
 advice.closure = ($closure, serial) => {
   Reflect.setPrototypeOf($closure, capture(Function.prototype));
   internals.add($closure);
-  return membrane.taint($closure, "closure");
+  return membrane.taint($closure);
 };
 
 // Combiners //
 advice.apply = ($$value1, $$value2, $$values, serial) => {
-  const $value1 = membrane.clean($$value1, "apply");
+  const $value1 = membrane.clean($$value1);
+  const f = release($value1);
+
+  // Begin Policy //
+  if (f === _aran_source_) {
+    DEBUG && console.log("_aran_source_", $$values);
+
+    const $$x = $$values[0];
+    const name = release(membrane.clean($$values[1]));
+    const argument = release(membrane.clean($$values[2]));
+
+    $$x.meta = { tag: "initial", name, argument, serial, inputs: [] };
+    return $$x;
+  } else if (f === _aran_sink_) {
+    DEBUG && console.log("_aran_sink_", $$values);
+
+    const $$x = $$values[0];
+    const name = release(membrane.clean($$values[1]));
+    const argument = release(membrane.clean($$values[2]));
+
+    if ($$x.meta) {
+      const r = {
+        name,
+        argument,
+        str: $$x.base,
+        taint: getTaint($$x.meta),
+      };
+      DEBUG && console.log("Tainted flow", r);
+      _aran_taintReports_.push(r);
+    }
+
+    return $$x;
+  }
+  // End Policy //
+
   if (internals.has($value1)) return Reflect.apply($value1, $$value2, $$values);
-  push("apply", release($value1).name, serial);
+  push("apply", f.name, serial);
   try {
     return Reflect.apply($value1, $$value2, $$values);
   } finally {
@@ -146,7 +129,7 @@ advice.apply = ($$value1, $$value2, $$values, serial) => {
   }
 };
 advice.construct = ($$value, $$values, serial) => {
-  const $value = membrane.clean($$value, "construct");
+  const $value = membrane.clean($$value);
   if (internals.has($value)) return Reflect.construct($value, $$values);
   push("construct", release($value).name, serial);
   try {
@@ -157,32 +140,46 @@ advice.construct = ($$value, $$values, serial) => {
 };
 advice.unary = (operator, $$value, serial) => {
   push("unary", operator, serial);
-  const value = release(membrane.clean($$value, "unary-argument"));
+  const value = release(membrane.clean($$value));
   try {
-    return membrane.taint(aran.unary(operator, value), "unary-result");
+    return membrane.taint(aran.unary(operator, value));
   } catch (error) {
-    throw membrane.taint(capture(error), "unary-error");
+    throw membrane.taint(capture(error));
   } finally {
     pop();
   }
-  pop();
 };
 advice.binary = (operator, $$value1, $$value2, serial) => {
   push("binary", operator, serial);
-  const value1 = release(membrane.clean($$value1), "binary-left");
-  const value2 = release(membrane.clean($$value2), "binary-right");
-  let primitive;
+  const value1 = release(membrane.clean($$value1));
+  const value2 = release(membrane.clean($$value2));
   try {
-    return membrane.taint(
-      aran.binary(operator, value1, value2),
-      "binary-result"
-    );
+    return membrane.taint(aran.binary(operator, value1, value2));
   } catch (error) {
-    throw membrane.taint(capture(error), "binary-error");
+    throw membrane.taint(capture(error));
   } finally {
     pop();
   }
 };
+
+const getTaint = (meta) => {
+  const visited = new WeakSet();
+  const visit = (meta) => {
+    if (meta === null) return [];
+    if (visited.has(meta)) return [];
+    visited.add(meta);
+    if (meta.inputs.length === 0) {
+      const { name, argument } = meta;
+      return { name, argument };
+    }
+    return meta.inputs.flatMap((input) => visit(input.meta));
+  };
+  return visit(meta);
+};
+
+const _aran_taintReports_ = [];
+const _aran_source_ = (x) => x;
+const _aran_sink_ = (x) => x;
 
 const generateSetup = (exports.generateSetup = () => {
   return Astring.generate(aran.setup());
@@ -194,6 +191,10 @@ exports.setup = (generatedSetup) => {
   } else {
     global.eval(generateSetup());
   }
+
+  global._aran_taintReports_ = _aran_taintReports_;
+  global._aran_source_ = _aran_source_;
+  global._aran_sink_ = _aran_sink_;
 };
 
 exports.instrument = (script) => {
