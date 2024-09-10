@@ -1,7 +1,7 @@
 {
   "name": "linvail-taint",
   "scripts": {
-    "init": "node app/generateSetup.js"
+    "init": "node app/generateSetup.js && node app/generateInstrumentedPolicy.js"
   },
   "dependencies": {
     "acorn": "^8.12.1",
