@@ -1,6 +1,6 @@
 const Analysis = require("../lib/analysis");
-const { getStdin } = require("./getStdin");
 const { setupPreamble, header, footer } = require("./snippets");
+const { getStdin } = require("./util");
 
 async function main() {
   const input = await getStdin();

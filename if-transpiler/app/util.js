@@ -2,8 +2,8 @@ const { readFileSync, writeFileSync } = require("fs");
 const path = require("path");
 const { promisify } = require("util");
 
-const instrumentWithStdio = async (callback) => {
-  const input = await new Promise((resolve) => {
+const getStdin = () =>
+  new Promise((resolve) => {
     process.stdin.setEncoding("utf8");
     let inputData = "";
     process.stdin.on("data", function (chunk) {
@@ -13,6 +13,9 @@ const instrumentWithStdio = async (callback) => {
       resolve(inputData);
     });
   });
+
+const instrumentWithStdio = async (callback) => {
+  const input = await getStdin();
   const output = await callback(input);
   await promisify((callback) => {
     process.stdout.write(output, callback);
@@ -45,3 +48,5 @@ exports.runInstrument = async (callback) => {
     process.exit(1);
   }
 };
+
+exports.getStdin = getStdin;
