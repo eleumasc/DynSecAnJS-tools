@@ -3,14 +3,16 @@ var _$tmp, $tmp, $rf;
 
 var global = this;
 
-$Γ["global"].$this = $Γ["global"];
+$Γ["global"].global = $Γ["global"].$this = $Γ["global"];
 
 var $Λ = [{ l: 0, id: "global" }];
 var $Δ = [];
 
-const taintArray = [null];
+global._ifTranspiler_taintReports_ = [];
+
+global._ifTranspiler_taintArray_ = [null];
 function allocTaint(taint) {
-  return taintArray.push(taint) - 1;
+  return _ifTranspiler_taintArray_.push(taint) - 1;
 }
 
 function $lub() {
@@ -20,11 +22,11 @@ function $lub() {
   for (const a of arguments) {
     if (a === 0) continue;
     if (taint) {
-      taint = new Set([...taint, ...taintArray[a]]);
+      taint = new Set([...taint, ..._ifTranspiler_taintArray_[a]]);
       allocRequired = true;
     } else {
       taintIndex = a;
-      taint = taintArray[a];
+      taint = _ifTranspiler_taintArray_[a];
     }
   }
   return allocRequired ? allocTaint(taint) : taintIndex;
@@ -113,11 +115,16 @@ function sec_lvl(obj, prop, getValue, $$cs) {
   }
 }
 
-function $output(arg, argValue, $$cs, pcLvl) {
+function $output(arg, argValue, $$cs, pcLvl, name, argument) {
   var argSecLvl = sec_lvl(arg, null, true, $$cs);
 
   if ($lub(argSecLvl, pcLvl) !== 0) {
-    // TODO: report tainted flow
+    _ifTranspiler_taintReports_.push({
+      name,
+      argument,
+      str: argValue,
+      taint: _ifTranspiler_taintArray_[argSecLvl],
+    });
   }
 }
 
