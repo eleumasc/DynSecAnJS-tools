@@ -2,9 +2,12 @@ const ifTranspiler = require("./esIF-Transpiler");
 const common = require("./common");
 const esprima = require("esprima");
 const escodegen = require("escodegen");
+const { patch } = require("./patch");
 
 exports.instrument = (script) => {
   var tree, formatOption;
+
+  script = patch(script);
 
   tree = esprima.parse(script, {
     loc: true,

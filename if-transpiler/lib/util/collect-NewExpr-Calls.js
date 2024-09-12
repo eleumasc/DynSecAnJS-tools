@@ -53,7 +53,7 @@
         }
         common.Map['' + scopeCopy.concat(lhsName)] = '' + rhsName;
 
-        console.log(common.Map)
+        // console.log(common.Map)
 
     }
 

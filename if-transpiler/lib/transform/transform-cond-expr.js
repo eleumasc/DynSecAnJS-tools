@@ -44,7 +44,7 @@
             modified = false;
 
             common.traverse(result, {
-                    leave: function leave(node) {
+                    enter: function enter(node) {
                         var statements, stmt, i;
                         if (node.type === Syntax.Program || node.type === Syntax.BlockStatement) {
                             statements = node.body;

@@ -149,7 +149,7 @@
             //console.log(common.Map);
             scopeCopy = common.deepCopy(scope);
             common.unMapIntermediaryScopes(scopeCopy);
-            console.log("Warning: Can't find matching function call in common.Map for:" +
+            console.error("Warning: Can't find matching function call in common.Map for:" +
                 scopeCopy.concat(rhsName) + " line:" + node.loc.start.line);
 
 
