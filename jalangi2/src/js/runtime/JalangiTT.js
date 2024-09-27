@@ -1064,6 +1064,14 @@ let Jalangi;
       }
       global.__ytjs_sink_test = __ytjs_sink_test;
 
+      function normalizeUrl(value) {
+        try {
+          return new URL("" + value, document.baseURI).toString();
+        } catch (_) {
+          return void 0;
+        }
+      }
+
       function invokeFunAsSource(iid, f, base, args, result) {
         if (f === __ytjs_source_test) {
           return Taint(
@@ -1082,10 +1090,12 @@ let Jalangi;
           collectStorageLabel(label);
           return Taint(label);
         } else if (f === fetch) {
+          const url = normalizeUrl(args[0]);
+          if (!url) return BOTTOM;
           return Taint(
             Label("fetch_1", Location(iid), {
               method: (args[1] && args[1]["method"]) || "GET",
-              url: args[0],
+              url,
             })
           );
         }
@@ -1111,6 +1121,8 @@ let Jalangi;
           collectStorageLabel(label);
           collectFlow(join(argsTaint[1], memory.getIntrinsic(args[1])), label);
         } else if (f === navigator_sendBeacon) {
+          const url = normalizeUrl(args[0]);
+          if (!url) return;
           collectFlow(
             join(
               args[0]
@@ -1120,9 +1132,7 @@ let Jalangi;
                 ? join(argsTaint[1], memory.getIntrinsic(args[1]))
                 : BOTTOM
             ),
-            Label("navigator.sendBeacon", Location(iid), {
-              url: "" + args[0],
-            })
+            Label("navigator.sendBeacon", Location(iid), { url })
           );
         } else if (
           (f === XMLHttpRequest_prototype_open ||
@@ -1143,6 +1153,8 @@ let Jalangi;
             );
           }
         } else if (f === fetch) {
+          const url = normalizeUrl(args[0]);
+          if (!url) return;
           collectFlow(
             join(
               argsTaint[0],
@@ -1157,7 +1169,7 @@ let Jalangi;
             ),
             Label("fetch_2", Location(iid), {
               method: (args[1] && args[1]["method"]) || "GET",
-              url: args[0],
+              url,
             })
           );
         }
@@ -1349,19 +1361,22 @@ let Jalangi;
 
       XMLHttpRequest_prototype.open = function (
         method,
-        url,
+        rawUrl,
         async,
         username,
         password
       ) {
-        XMLHttpRequest_META.set(this, {
-          method: method,
-          url: url.toString(),
-        });
+        const url = normalizeUrl(rawUrl);
+        if (url) {
+          XMLHttpRequest_META.set(this, {
+            method: method,
+            url,
+          });
+        }
         return XMLHttpRequest_prototype_open.call(
           this,
           method,
-          url,
+          rawUrl,
           async || true,
           username,
           password
