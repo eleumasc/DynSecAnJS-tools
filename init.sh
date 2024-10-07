@@ -2,6 +2,8 @@
 
 WPRGO_ZIP="web_page_replay_go.zip"
 FOXHOUND_ZIP="foxhound.zip"
+PANOPTICHROME_CHUNK_ZIP="panoptichrome.chunk.zip"
+PANOPTICHROME_ZIP="panoptichrome.zip"
 
 decompress_files() {
     echo "Decompressing $1..."
@@ -22,6 +24,10 @@ decompress_files "$WPRGO_ZIP"
 
 echo "Decompressing Project Foxhound..."
 decompress_files "$FOXHOUND_ZIP"
+
+echo "Decompressing PanoptiChrome..."
+zip -F "$PANOPTICHROME_CHUNK_ZIP" --out "$PANOPTICHROME_ZIP"
+decompress_files "$PANOPTICHROME_ZIP"
 
 echo "Setting up JEST..."
 (cd jest && stack build)
